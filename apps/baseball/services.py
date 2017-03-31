@@ -53,13 +53,15 @@ def visionCall(img_str):
 
     logo_info = r.json()
 
-    if logo_info['responses'][0]['logoAnnotations'][0]['description']:
-      result = logo_info['responses'][0]['logoAnnotations'][0]['description']
+    logo_info = logo_info['responses'][0]
+
+    if 'logoAnnotations' in logo_info:
+      result = logo_info['logoAnnotations'][0]['description']
       if twitterSearch(result):
         return result
       
-    if logo_info['responses'][0]['webDetection']['webEntities']:
-      for entities in logo_info['responses'][0]['webDetection']['webEntities']:
+    if 'webDetection' in logo_info:
+      for entities in logo_info['webDetection']['webEntities']:
         result = entities['description']
         if twitterSearch(result):
           return result
