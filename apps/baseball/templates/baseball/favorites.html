@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+	<html lang="en">
+		<head>
+			<meta charset="utf-8">
+			<meta name="viewport" content="width=device-width, initial-scale=1">
+			<title></title>
+			<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+			<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+			<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+			<script>
+				window.twttr = (function(d, s, id) {
+				  var js, fjs = d.getElementsByTagName(s)[0],
+				    t = window.twttr || {};
+				  if (d.getElementById(id)) return t;
+				  js = d.createElement(s);
+				  js.id = id;
+				  js.src = "https://platform.twitter.com/widgets.js";
+				  fjs.parentNode.insertBefore(js, fjs);
+				  t._e = [];
+				  t.ready = function(f) {
+				    t._e.push(f);
+				  };
+				  return t;
+				}(document, "script", "twitter-wjs"));
+			</script>
+			<script>
+			$(document).ready(function(){
+				$('form').submit(function(e){
+				  e.preventDefault()
+				  divName = $(this).attr("attr-name")
+				  console.log(divName)
+				  $.ajax({
+				    url: 'removefavorite/' + divName,
+				    method: 'post',
+				    data: $(this).serialize(),
+				    success: function(serverResponse){
+				      $('#' + divName).fadeOut(750, function(){ 
+				      	$(this).remove(); 
+				      });
+				    }
+				  })
+				})
+			})
+			</script>
+		</head>
+	<body>
+		<div class="container-fluid">
+			<div class="row" id="header_title">
+				<div class="col-sm-6" id="name">
+					<h2>Favorites
+					<a href="{% url 'baseball:index' %}" class="btn btn-link">Search Logos</a>
+					<a href="{% url 'login:index' %}" class="btn btn-link">Logout</a></h2>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-6" id="tweets">
+					<br>
+					<ul class="list-group">
+					{% for tweet in tweets %}
+							<li class="list-group-item" id="{{tweet.id}}">
+								<blockquote class="twitter-tweet" data-lang="en">
+					  				<a href="{{ tweet.url }}"></a>
+								</blockquote>
+								<form action="{% url 'baseball:remove_favorite' tweet.id %}" method="post" attr-name = {{tweet.id}}>
+									{% csrf_token %}
+									<button type="submit" class="btn btn-danger">Remove from Favorites</button>
+								</form>
+							</li>
+					{% endfor %}
+					</ul>
+				</div>
+		</div>
+	</body>
+</html>

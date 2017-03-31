@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+	<html lang="en">
+		<head>
+			<meta charset="utf-8">
+			<meta name="viewport" content="width=device-width, initial-scale=1">
+			<title>Logo Search</title>
+			<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+			<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script> 
+			<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+			<script>
+				window.twttr = (function(d, s, id) {
+				  var js, fjs = d.getElementsByTagName(s)[0],
+				    t = window.twttr || {};
+				  if (d.getElementById(id)) return t;
+				  js = d.createElement(s);
+				  js.id = id;
+				  js.src = "https://platform.twitter.com/widgets.js";
+				  fjs.parentNode.insertBefore(js, fjs);
+				  t._e = [];
+				  t.ready = function(f) {
+				    t._e.push(f);
+				  };
+				  return t;
+				}(document, "script", "twitter-wjs"));
+			</script>
+			<script>
+			$(document).ready(function(){
+				$('.user_add_tweet').submit(function(e){
+				  e.preventDefault()
+				  divName = $(this).attr("attr-name")
+				  console.log(divName)
+				  $.ajax({
+				    url: 'addfavorite',
+				    method: 'post',
+				    data: $(this).serialize(),
+				    success: function(serverResponse){
+				      $('#' + divName).html(serverResponse)
+				    }
+				  })
+				})
+			})
+			</script>
+		</head>
+		<body>
+			<div class = "container-fluid">
+				<div class="row" id="header_title">
+					<div class="col-sm-6" id="name">
+						<h2>Welcome
+						<a href="{% url 'baseball:favorites' %}" class="btn btn-link">View Favorites</a>
+						<a href="{% url 'login:index' %}" class="btn btn-link">Logout</a></h2>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-6" id="img_upload">
+						<form action="{% url 'baseball:upload_image' %}" method="post" enctype="multipart/form-data" id="search">
+							{% csrf_token %}
+							<div class="form-group">
+								<label for="logo_image">Upload Image</label>
+								<input type="file" name="logo_image" id="logo_image" class="form-control">
+							</div>
+							<button type="submit" class="btn btn-primary">Find Tweets</button>
+						</form>
+						{% if request.session.img_description %}
+							<h3>Image Description: {{ request.session.img_description }}</h3>
+						{% endif %}
+					</div>
+					<div class="col-sm-6" id="tweets">
+						<br>
+						<ul class="list-group">
+						{% for tweet,counter in tweets %}
+								<li class="list-group-item">
+									<blockquote class="twitter-tweet" data-lang="en">
+						  				<a href="{{ tweet }}"></a>
+									</blockquote>
+									{% if tweet in user_favorites %}
+										<button class="btn btn-success disabled">Added to Favorites</button>
+									{% else %}
+										<div id="{{counter}}">
+											<form action="{% url 'baseball:add_favorite' %}" method="post" class="user_add_tweet" attr-name="{{counter}}">
+												{% csrf_token %}
+												<input type="hidden" name="url" value="{{ tweet }}"></input>
+												<button class="btn btn-primary" type="submit">Add to Favorites</button>
+											</form>
+										</div>
+									{% endif %}
+								</li>
+						{% endfor %}
+						</ul>
+					</div>	
+				</div>
+			</div>
+		</body>
+</html>

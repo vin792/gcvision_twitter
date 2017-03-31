@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+	<html lang="en">
+		<head>
+			<meta charset="utf-8">
+			<meta name="viewport" content="width=device-width, initial-scale=1">
+			<title>Login | Home</title>
+			<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+			<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+			<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+		</head>
+	<body>
+		<div class="container-fluid col-sm-6 col-sm-offset-3">
+			<div class="row">
+				<ul class="nav nav-tabs" id="myTab">
+					<li class="active"><a data-toggle="tab" href="#registration">Register</a></li>
+					<li><a data-toggle="tab" href="#login">Login</a></li>
+				</ul>
+	 			<div class="tab-content">
+					<div id="registration" class="tab-pane fade in active">
+						<br>
+						<form action="{% url 'login:register' %}" method="post">
+						{% csrf_token %}
+						<div class="form-group">
+							<label for="first_name">First Name</label>
+							<input type="text" class="form-control" name="first_name">
+						</div>
+						<div class="form-group">
+							<label for="last_name">Last Name</label>
+							<input type="text" class="form-control" name="last_name">
+						</div>
+						<div class="form-group">
+							<label for="email">Email</label>
+							<input type="email" class="form-control" name="email">
+						</div>
+						<div class="form-group">
+							<label for="password">Password</label>
+							<input type="password" class="form-control" name="password">
+						</div>
+						<div class="form-group">
+							<label for="password_confirm">Password Confirmation</label>
+							<input type="password" class="form-control" name="password_confirm">
+						</div>
+						<button type="submit" class="btn btn-primary">Register</button>
+					</form>
+					</div>
+					<div id="login" class="tab-pane fade">
+						<br>
+						<form action="{% url 'login:user_login' %}" method="post">
+						{% csrf_token %}
+						<div class="form-group">
+							<label for="email">Email</label>
+							<input type="email" class="form-control" name="email">
+						</div>
+						<div class="form-group">
+							<label for="password">Password</label>
+							<input type="password" class="form-control" name="password">
+						</div>
+						<button type="submit" class="btn btn-primary">Login</button>
+					</form>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<br>
+				<ul class="list-group">
+					{% for error_message in messages %}
+						{% if error_message.tags == "register error" %}
+						<li class="list-group-item list-group-item-danger">{{error_message}}</li>
+						{% endif %}
+					{% endfor %}
+				</ul>
+				<ul class="list-group">
+					{% for error_message in messages %}
+						{% if error_message.tags == "login error" %}
+						<li class="list-group-item list-group-item-danger">{{ error_message }}</li>
+						{% endif %}
+					{% endfor %}
+				</ul>
+			</div>
+		</div>
+	</body>
+</html>

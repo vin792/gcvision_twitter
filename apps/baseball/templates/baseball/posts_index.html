@@ -1,0 +1,12 @@
+<div class="col-sm-6" id="tweets">
+	<br>
+	<ul class="list-group">
+	{% for tweet in tweets %}
+			<li class="list-group-item">
+				<blockquote class="twitter-tweet" data-lang="en">
+	  				<a href="{{ tweet }}"></a>
+				</blockquote>
+			</li>
+	{% endfor %}
+	</ul>
+</div>	
