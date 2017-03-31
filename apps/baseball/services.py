@@ -36,8 +36,11 @@ def visionCall(img_str):
               {
                   "features": [
                   {
-                    "type": "WEB_DETECTION",
-                  }
+                    "type": "LOGO_DETECTION"
+                  }, 
+                  {
+                    "type": "WEB_DETECTION"
+                  }, 
                 ],
                 "image": {
                   "content": img_str
@@ -50,12 +53,18 @@ def visionCall(img_str):
 
     logo_info = r.json()
 
-    for entities in logo_info['responses'][0]['webDetection']['webEntities']:
-      result = entities['description']
+    if logo_info['responses'][0]['logoAnnotations'][0]['description']:
+      result = logo_info['responses'][0]['logoAnnotations'][0]['description']
       if twitterSearch(result):
         return result
+      
+    if logo_info['responses'][0]['webDetection']['webEntities']:
+      for entities in logo_info['responses'][0]['webDetection']['webEntities']:
+        result = entities['description']
+        if twitterSearch(result):
+          return result
 
-    return "No results for image"
+    return "No results for image. Try another image"
 
 
 
